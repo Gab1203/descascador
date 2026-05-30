@@ -18,7 +18,7 @@ export default function Footer() {
             <span className="text-2xl">🥔</span> Descascador
           </span>
           <p className="mt-2.5 max-w-[280px] text-[14.5px] text-[#B6A892]">
-            Descascamos sua banana desde 2025. E sua batata também.
+            Descascamos sua banana desde 2026. E sua batata também.
           </p>
         </div>
 
@@ -39,7 +39,7 @@ export default function Footer() {
       </div>
 
       <div className="mx-auto flex max-w-[1180px] flex-wrap justify-between gap-4 px-7 pt-[22px] text-[13.5px] text-[#9C8E78]">
-        <span>© 2025 Descascador Ltda.</span>
+        <span>© 2026 Descascador Ltda.</span>
         <span className="font-bold text-banana">
           ⚠️ Nenhum dedo foi cortado na produção deste software.
         </span>

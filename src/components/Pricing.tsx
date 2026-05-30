@@ -21,7 +21,7 @@ export default function Pricing({ activePlanId, onChoose }: PricingProps) {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 items-stretch gap-3.5 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-1 items-stretch gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
           {PLANS.map((p) => {
             const active = activePlanId === p.id;
             const accentVars = {
@@ -51,37 +51,20 @@ export default function Pricing({ activePlanId, onChoose }: PricingProps) {
                   </span>
                 )}
 
-                <div className="min-h-[18px] text-[13px] font-bold" style={{ color: "var(--accent-deep)" }}>
+                <div className="text-center min-h-[18px] text-[13px] font-bold" style={{ color: "var(--accent-deep)" }}>
                   “{p.nick}”
                 </div>
-                <div className="mt-0.5 font-display text-[22px] font-extrabold">{p.name}</div>
+                <div className="text-center mt-0.5 font-display text-[22px] font-extrabold">{p.name}</div>
 
-                <div className="my-2.5 flex items-baseline gap-1">
-                  <span className="font-display text-[27px] font-extrabold tracking-[-0.02em]">{p.price}</span>
+                <div className="flex justify-center items-baseline gap-1 my-2.5">
+                  <span className="font-display text-[25px] font-extrabold tracking-[-0.02em]">{p.price}</span>
                   <i className="text-[13px] font-semibold not-italic text-muted">{p.per}</i>
                 </div>
 
-                <div className="mb-3.5 inline-flex items-center gap-1.5 self-start rounded-full border-2 border-line bg-bg2 px-2.5 py-[5px] text-[13.5px] font-bold">
+                <div className="mx-auto mb-3.5 inline-flex items-center justify-center gap-1.5 rounded-full border-2 border-line bg-bg2 px-2.5 py-[5px] text-[13.5px] font-bold whitespace-nowrap">
                   <Coins size={17} style={{ color: "var(--accent-deep)" }} />
                   {p.tokensLabel}
                 </div>
-
-                <div
-                  className="mb-3.5 rounded-[14px] border-2 border-dashed p-[14px_12px_12px] text-[13.5px] leading-[1.45] text-pretty"
-                  style={{
-                    borderColor: "var(--accent-deep)",
-                    background: "color-mix(in srgb, var(--accent) 16%, #fff)",
-                  }}
-                >
-                  <span
-                    className="mb-1.5 block font-display text-[10.5px] font-extrabold uppercase tracking-[0.06em]"
-                    style={{ color: "var(--accent-deep)" }}
-                  >
-                    Como a IA age
-                  </span>
-                  {p.behavior}
-                </div>
-
                 <ul className="mb-[18px] flex flex-1 list-none flex-col gap-2 p-0">
                   {p.feats.map((f, i) => (
                     <li key={i} className="flex items-start gap-1.5 text-[13.5px] text-inksoft">
