@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🥔 Descascador
 
-## Getting Started
+Landing page interativa do **Descascador** — você faz upload de uma fruta/legume, gasta **Tokens de Descascamento** e a IA devolve o alimento descascado. Dependendo do plano, o descascamento é perfeito... ou propositalmente péssimo.
 
-First, run the development server:
+Construído com **Next.js (App Router)**, **TypeScript**, **Tailwind CSS v4** e **Lucide React**.
+
+## Rodando o projeto
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Estrutura
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── globals.css      # Tailwind v4 + design tokens (@theme) + animações
+│   ├── layout.tsx       # fontes (Bricolage Grotesque + Hanken Grotesk) + metadata
+│   └── page.tsx         # renderiza <Descascador />
+├── components/
+│   ├── Descascador.tsx  # root client — estado de tokens + plano ativo
+│   ├── Navbar.tsx       # logo, contador de tokens, login/avatar
+│   ├── Hero.tsx         # dropzone + máquina de estados do upload + antes/depois
+│   ├── HowItWorks.tsx   # 3 passos
+│   ├── Pricing.tsx      # 5 planos (Pro destacado) — o coração da piada
+│   └── Footer.tsx       # rodapé + aviso legal
+└── data/
+    └── plans.ts         # PLANS / PRODUCE + tipos Plan e Produce
+```
 
-## Learn More
+## Tipos
 
-To learn more about Next.js, take a look at the following resources:
+Em `src/data/plans.ts`:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```ts
+export interface Plan {
+  id: string;
+  nick: string;
+  name: string;
+  price: string;
+  per: string;
+  tokens: number;      // pode ser Infinity (Premium)
+  tokensLabel: string;
+  peelPct: number;
+  behavior: string;
+  accent: string;
+  accentDeep: string;
+  cta: string;
+  feats: string[];
+  hot?: boolean;
+  vaporize?: boolean;
+}
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+export interface Produce {
+  key: string;
+  label: string;
+  emoji: string;
+  tint: string;
+}
+```
 
-## Deploy on Vercel
+Todos os componentes têm props tipadas (`HeroProps`, `NavbarProps`, `PricingProps`, etc.).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Design system
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Tokens definidos em `globals.css` via `@theme` (Tailwind v4) — use como utilitários:
+
+| Token    | Cor       | Uso                    |
+| -------- | --------- | ---------------------- |
+| `carrot` | `#FF6A2B` | ação principal         |
+| `lime`   | `#7BC23A` | sucesso / plano ativo  |
+| `banana` | `#FFC833` | destaque / tokens      |
+| `ink`    | `#2A2017` | texto / contornos      |
+| `bg`     | `#FFF7EC` | fundo                  |
+
+Estilo: cartões com contorno grosso + sombra sólida, cantos arredondados, dois pesos de fonte. Helpers `.btn`, `.btn-primary`, `.pill`, `.checker` e animações (`.animate-bob`, `.animate-chop`, etc.) ficam em `globals.css`.
+
+## Plugando a IA de verdade 
+
+A demo hoje é **mockada**: o `peel()` em `Hero.tsx` só espera 2,2s e mostra um resultado simulado. Para conectar o modelo real:
+
+1. Crie uma rota `src/app/api/peel/route.ts` que recebe a imagem (base64) + o `peelPct` do plano e chama o `gemini-2.5-flash-image` com um prompt do tipo _"remova X% da casca deste alimento"_.
+2. Em `Hero.tsx`, troque o `setTimeout(...)` dentro de `peel()` por um `await fetch("/api/peel", { ... })` e guarde a imagem retornada no estado para exibir no painel "Descascado".
+3. O `peelPct` / `vaporize` de cada plano (em `data/plans.ts`) já controla a "qualidade" — passe-os no prompt.
+
+> ⚠️ Nenhum dedo foi cortado na produção deste software.
