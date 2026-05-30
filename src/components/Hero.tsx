@@ -9,7 +9,7 @@ import {
   Upload,
   Check,
 } from "lucide-react";
-import { PRODUCE, type Plan, type Produce } from "@/data/plans";
+import { PRODUCE, type Plan } from "@/data/plans";
 
 type Stage = "idle" | "ready" | "peeling" | "done";
 
@@ -59,10 +59,9 @@ function QualityRing({ pct, tint }: { pct: number; tint: string }) {
 }
 
 export default function Hero({ tokens, activePlan, onSpendToken }: HeroProps) {
-  const [produce, setProduce] = useState<Produce>(PRODUCE[0]);
   const [stage, setStage] = useState<Stage>("idle");
   const [dragOver, setDragOver] = useState(false);
-
+  const activeProduce = PRODUCE[0];
   const noTokens = tokens !== Infinity && tokens <= 0;
 
   function ready() {
@@ -84,7 +83,7 @@ export default function Hero({ tokens, activePlan, onSpendToken }: HeroProps) {
 
   return (
     <section id="top" className="py-[54px] pb-[30px]">
-      <div className="mx-auto grid max-w-[1180px] grid-cols-1 items-center gap-12 px-7 md:grid-cols-[1fr_1.02fr]">
+      <div className="text-center mx-auto max-w-[1180px] grid-cols-1 items-center gap-12 px-7">
         {/* ---- Copy ---- */}
         <div>
           <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border-2 border-ink bg-white px-3.5 py-[7px] text-[13.5px] font-bold text-carrotdeep shadow-flat">
@@ -100,12 +99,12 @@ export default function Hero({ tokens, activePlan, onSpendToken }: HeroProps) {
             </span>
           </h1>
 
-          <p className="mt-5 max-w-[480px] text-[18.5px] text-inksoft text-pretty">
+          <p className="mx-auto mt-5 max-w-[480px] text-[18.5px] text-inksoft text-pretty">
             Faça upload de um vegetal, gaste seus tokens e deixe nossa IA tirar a
             casca pra você. Sem facas, sem dedos cortados, sem desculpas.
           </p>
 
-          <div className="mt-7 flex flex-wrap gap-3">
+          <div className="justify-center mt-7 flex flex-wrap gap-10">
             <a href="#demo" className="btn btn-primary btn-lg">
               Descascar agora <ArrowRight size={18} />
             </a>
@@ -114,156 +113,133 @@ export default function Hero({ tokens, activePlan, onSpendToken }: HeroProps) {
             </a>
           </div>
 
-          <div className="mt-8 flex items-center gap-5">
-            <Stat value="1.2M" label="cascas removidas" />
+          <div className="justify-center mt-8 flex items-center gap-5">
+            <Stat value="1.2M" label="Cascas Removidas" />
             <Divider />
-            <Stat value="0" label="dedos cortados" />
+            <Stat value="0" label="Dedos Cortados" />
             <Divider />
-            <Stat value="4.9★" label="nota dos chefs" />
+            <Stat value="4.9★" label="Nota dos Chefs" />
           </div>
         </div>
+      </div>
 
-        {/* ---- Demo card ---- */}
-        <div id="demo" className="rounded-[30px] border-[3px] border-ink bg-surface p-5 shadow-chunky">
-          <div className="mb-3.5 flex flex-wrap items-center justify-between gap-2.5">
-            <span className="font-display text-base font-extrabold">🔪 Bancada de descascamento</span>
-            <span className="pill bg-bg2 px-2.5 py-1.5 text-xs">Plano: {activePlan.nick}</span>
-          </div>
+      {/* ---- Demo card ---- */}
+      <div id="demo" className="mx-[30px] mt-[50px] rounded-[30px] border-[3px] border-ink bg-surface p-5 shadow-chunky">
 
-          {/* produce picker */}
-          <div className="mb-3.5 flex flex-wrap gap-2">
-            {PRODUCE.map((p) => {
-              const on = produce.key === p.key;
-              return (
-                <button
-                  key={p.key}
-                  onClick={() => {
-                    setProduce(p);
-                    if (stage === "done" || stage === "peeling") setStage("ready");
-                  }}
-                  className={
-                    "inline-flex items-center gap-1.5 rounded-full border-2 px-3.5 py-2 text-sm font-bold transition " +
-                    (on
-                      ? "border-ink bg-ink text-white"
-                      : "border-line bg-white text-inksoft hover:border-ink")
-                  }
-                >
-                  <span className="text-base">{p.emoji}</span>
-                  {p.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* ---- IDLE: dropzone ---- */}
-          {stage === "idle" && (
-            <div
-              onClick={ready}
-              onDragOver={(e) => {
-                e.preventDefault();
-                setDragOver(true);
-              }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={onDrop}
-              className={
-                "cursor-pointer rounded-[22px] border-[3px] border-dashed px-6 py-[46px] text-center transition " +
-                (dragOver
-                  ? "scale-[1.01] border-carrot bg-[#FFEAD6]"
-                  : "border-[#D9C9B0] bg-gradient-to-b from-[#FFFBF4] to-[#FFF6E9] hover:border-carrot hover:bg-[#FFF3E6]")
-              }
-            >
-              <div className="mx-auto mb-3.5 grid h-[62px] w-[62px] place-items-center rounded-full border-[2.5px] border-ink bg-banana shadow-flat">
-                <Upload size={30} />
-              </div>
-              <p className="font-display text-[19px] font-bold">
-                Arraste seu {produce.label.toLowerCase()} aqui
-              </p>
-              <p className="mt-1.5 text-[13.5px] font-medium text-muted">
-                ou clique para escolher um arquivo · PNG, JPG até 10MB
-              </p>
-            </div>
-          )}
-
-          {/* ---- READY: preview + peel button ---- */}
-          {stage === "ready" && (
-            <div className="flex flex-col items-center gap-4">
-              <div className="checker relative grid h-[230px] w-full place-items-center overflow-hidden rounded-[20px] border-[2.5px] border-ink">
-                <span className="animate-bob text-[120px] leading-none drop-shadow-[0_10px_14px_rgba(42,32,23,.22)]">
-                  {produce.emoji}
-                </span>
-                <span className="absolute bottom-2.5 left-3 rounded-lg border-2 border-ink bg-white px-2.5 py-[3px] text-xs font-bold text-inksoft">
-                  original.jpg
-                </span>
-              </div>
-              <button onClick={peel} disabled={noTokens} className="btn btn-primary btn-lg w-full justify-center">
-                <Scissors size={20} />
-                {noTokens ? "Sem tokens! Faça upgrade" : "Descascar (Custa 1 Token)"}
-              </button>
-              {noTokens && (
-                <p className="text-center text-[13.5px] font-medium text-muted">
-                  Seus tokens acabaram. Escolha um plano abaixo 👇
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* ---- PEELING: loader ---- */}
-          {stage === "peeling" && (
-            <div className="flex flex-col items-center gap-2 px-2.5 py-8">
-              <div className="relative mb-1.5 grid h-[90px] place-items-center">
-                <span className="animate-chop absolute left-[54%] top-0 text-[46px]">🔪</span>
-                <span className="text-[54px]">{produce.emoji}</span>
-              </div>
-              <p className="mt-1 font-display text-[21px] font-extrabold">Afiando as facas...</p>
-              <p className="text-[13.5px] font-medium text-muted">Removendo a casca pixel por pixel</p>
-              <div className="mt-2.5 h-3 w-3/4 overflow-hidden rounded-full border-2 border-ink bg-[#F0E6D6]">
-                <i className="animate-loadbar block h-full w-[40%] bg-[repeating-linear-gradient(45deg,var(--color-carrot),var(--color-carrot)_8px,var(--color-carrotdeep)_8px,var(--color-carrotdeep)_16px)]" />
-              </div>
-            </div>
-          )}
-
-          {/* ---- DONE: before / after ---- */}
-          {stage === "done" && (
-            <div className="flex flex-col gap-4">
-              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2.5">
-                <Panel label="Original">
-                  <span className="animate-pop text-[84px]">{produce.emoji}</span>
-                </Panel>
-
-                <ArrowRight size={22} className="text-carrot" />
-
-                <Panel label="Descascado" ok>
-                  {activePlan.vaporize ? (
-                    <span className="animate-pop text-[74px] opacity-90">💨</span>
-                  ) : (
-                    <span
-                      className="animate-pop text-[84px]"
-                      style={{ filter: "drop-shadow(0 8px 12px rgba(42,32,23,.18)) brightness(1.12) saturate(.62)" }}
-                    >
-                      {produce.emoji}
-                    </span>
-                  )}
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <span
-                      key={i}
-                      className="animate-fall absolute top-5 h-[9px] w-[13px] rounded-b-[14px] opacity-0"
-                      style={{ background: produce.tint, left: 18 + i * 12 + "%", animationDelay: i * 0.12 + "s" }}
-                    />
-                  ))}
-                  <QualityRing pct={activePlan.vaporize ? 100 : activePlan.peelPct} tint={produce.tint} />
-                </Panel>
-              </div>
-
-              <div className="rounded-[14px] border-2 border-ink bg-bg2 px-3.5 py-2.5 text-[14.5px] text-pretty">
-                <b className="font-display">“{activePlan.nick}”:</b> {activePlan.behavior}
-              </div>
-
-              <button onClick={() => setStage("ready")} className="btn w-full justify-center">
-                <RefreshCw size={18} /> Descascar outro
-              </button>
-            </div>
-          )}
+        {/* Título Atualizado (Centralizado e Empilhado) */}
+        <div className="mb-5 flex flex-col items-center justify-center gap-2.5">
+          <span className="font-display text-base font-extrabold text-center">🔪 Bancada de descascamento</span>
+          <span className="pill bg-bg2 px-2.5 py-1.5 text-xs text-center">Plano: {activePlan.nick}</span>
         </div>
+
+        {/* ---- IDLE: dropzone ---- */}
+        {stage === "idle" && (
+          <div
+            onClick={ready}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOver(true);
+            }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={onDrop}
+            className={
+              "cursor-pointer rounded-[22px] border-[3px] border-dashed px-6 py-[46px] text-center transition " +
+              (dragOver
+                ? "scale-[1.01] border-carrot bg-[#FFEAD6]"
+                : "border-[#D9C9B0] bg-gradient-to-b from-[#FFFBF4] to-[#FFF6E9] hover:border-carrot hover:bg-[#FFF3E6]")
+            }
+          >
+            <div className="mx-auto mb-3.5 grid h-[62px] w-[62px] place-items-center rounded-full border-[2.5px] border-ink bg-banana shadow-flat">
+              <Upload size={30} />
+            </div>
+            <p className="font-display text-[19px] font-bold">
+              Arraste seu {activeProduce.label.toLowerCase()} aqui
+            </p>
+            <p className="mt-1.5 text-[13.5px] font-medium text-muted">
+              ou clique para escolher um arquivo · PNG, JPG até 10MB
+            </p>
+          </div>
+        )}
+
+        {/* ---- READY: preview + peel button ---- */}
+        {stage === "ready" && (
+          <div className="flex flex-col items-center gap-4">
+            <div className="checker relative grid h-[230px] w-full place-items-center overflow-hidden rounded-[20px] border-[2.5px] border-ink">
+              <span className="animate-bob text-[120px] leading-none drop-shadow-[0_10px_14px_rgba(42,32,23,.22)]">
+                {activeProduce.emoji}
+              </span>
+              <span className="absolute bottom-2.5 left-3 rounded-lg border-2 border-ink bg-white px-2.5 py-[3px] text-xs font-bold text-inksoft">
+                original.jpg
+              </span>
+            </div>
+            <button onClick={peel} disabled={noTokens} className="btn btn-primary btn-lg w-full justify-center">
+              <Scissors size={20} />
+              {noTokens ? "Sem tokens! Faça upgrade" : "Descascar (Custa 1 Token)"}
+            </button>
+            {noTokens && (
+              <p className="text-center text-[13.5px] font-medium text-muted">
+                Seus tokens acabaram. Escolha um plano abaixo 👇
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* ---- PEELING: loader ---- */}
+        {stage === "peeling" && (
+          <div className="flex flex-col items-center gap-2 px-2.5 py-8">
+            <div className="relative mb-1.5 grid h-[90px] place-items-center">
+              <span className="animate-chop absolute left-[54%] top-0 text-[46px]">🔪</span>
+              <span className="text-[54px]">{activeProduce.emoji}</span>
+            </div>
+            <p className="mt-1 font-display text-[21px] font-extrabold">Afiando as facas...</p>
+            <p className="text-[13.5px] font-medium text-muted">Removendo a casca pixel por pixel</p>
+            <div className="mt-2.5 h-3 w-3/4 overflow-hidden rounded-full border-2 border-ink bg-[#F0E6D6]">
+              <i className="animate-loadbar block h-full w-[40%] bg-[repeating-linear-gradient(45deg,var(--color-carrot),var(--color-carrot)_8px,var(--color-carrotdeep)_8px,var(--color-carrotdeep)_16px)]" />
+            </div>
+          </div>
+        )}
+
+        {/* ---- DONE: before / after ---- */}
+        {stage === "done" && (
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2.5">
+              <Panel label="Original">
+                <span className="animate-pop text-[84px]">{activeProduce.emoji}</span>
+              </Panel>
+
+              <ArrowRight size={22} className="text-carrot" />
+
+              <Panel label="Descascado" ok>
+                {activePlan.vaporize ? (
+                  <span className="animate-pop text-[74px] opacity-90">💨</span>
+                ) : (
+                  <span
+                    className="animate-pop text-[84px]"
+                    style={{ filter: "drop-shadow(0 8px 12px rgba(42,32,23,.18)) brightness(1.12) saturate(.62)" }}
+                  >
+                    {activeProduce.emoji}
+                  </span>
+                )}
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <span
+                    key={i}
+                    className="animate-fall absolute top-5 h-[9px] w-[13px] rounded-b-[14px] opacity-0"
+                    style={{ background: activeProduce.tint, left: 18 + i * 12 + "%", animationDelay: i * 0.12 + "s" }}
+                  />
+                ))}
+                <QualityRing pct={activePlan.vaporize ? 100 : activePlan.peelPct} tint={activeProduce.tint} />
+              </Panel>
+            </div>
+
+            <div className="rounded-[14px] border-2 border-ink bg-bg2 px-3.5 py-2.5 text-[14.5px] text-pretty">
+              <b className="font-display">“{activePlan.nick}”:</b>
+            </div>
+
+            <button onClick={() => setStage("ready")} className="btn w-full justify-center">
+              <RefreshCw size={18} /> Descascar outro
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

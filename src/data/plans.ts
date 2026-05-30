@@ -10,7 +10,6 @@ export interface Plan {
   tokens: number; // pode ser Infinity (plano Premium)
   tokensLabel: string;
   peelPct: number;
-  behavior: string;
   accent: string;
   accentDeep: string;
   cta: string;
@@ -29,44 +28,27 @@ export interface Produce {
 export const PLANS: Plan[] = [
   {
     id: "free",
-    nick: "Lâmina Cega",
+    nick: "Descascador de Plástico",
     name: "Gratuito",
     price: "R$ 0",
     per: "/mês",
     tokens: 3,
     tokensLabel: "3 tokens / mês",
     peelPct: 10,
-    behavior: "Descasca apenas 10%. Basicamente só arranha a casca.",
     accent: "var(--color-banana)",
     accentDeep: "var(--color-bananadeep)",
     cta: "Começar de graça",
     feats: ["3 descascadas por mês", "Resolução baixa", "Marca d'água de batata"],
   },
   {
-    id: "inicial",
-    nick: "Faca de Serra de Pão",
-    name: "Inicial",
-    price: "R$ 9,90",
-    per: "/mês",
-    tokens: 20,
-    tokensLabel: "20 tokens / mês",
-    peelPct: 30,
-    behavior: "Descasca 30%, mas tira um pedaço da polpa junto porque a faca é ruim.",
-    accent: "var(--color-lime)",
-    accentDeep: "var(--color-limedeep)",
-    cta: "Assinar Inicial",
-    feats: ["20 descascadas por mês", "Resolução média", "Perde ~15% da polpa"],
-  },
-  {
     id: "mediano",
-    nick: "Descascador de Feira",
+    nick: "Descascador de Ouro",
     name: "Mediano",
     price: "R$ 19,90",
     per: "/mês",
     tokens: 50,
     tokensLabel: "50 tokens / mês",
     peelPct: 60,
-    behavior: "Descasca 60%. Fica bom, mas esquece o fundo do vegetal.",
     accent: "var(--color-carrot)",
     accentDeep: "var(--color-carrotdeep)",
     cta: "Assinar Mediano",
@@ -82,7 +64,6 @@ export const PLANS: Plan[] = [
     tokensLabel: "200 tokens / mês",
     peelPct: 100,
     hot: true,
-    behavior: "100% descascado perfeitamente. Corte Julienne opcional.",
     accent: "var(--color-carrot)",
     accentDeep: "var(--color-carrotdeep)",
     cta: "Virar MasterChef",
@@ -103,7 +84,6 @@ export const PLANS: Plan[] = [
     tokensLabel: "Tokens infinitos",
     peelPct: 100,
     vaporize: true,
-    behavior: "Descasca até o que não tem casca. Já vaporizou uma uva.",
     accent: "var(--color-lime)",
     accentDeep: "var(--color-limedeep)",
     cta: "Empunhar o sabre",
@@ -112,6 +92,7 @@ export const PLANS: Plan[] = [
       "Resolução interdimensional",
       "Vaporiza o que quiser",
       "Pode descascar a si mesmo",
+      "Ideal para restaurantes"
     ],
   },
 ];
