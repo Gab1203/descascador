@@ -46,14 +46,14 @@ async def peel(request_data: PeelRequest):
                 {
                     "type": "image",
                     "data": base64_string,
-                    "mime_type": "image/jpeg"
+                    "mime_type": f"image/{request_data.image_type}",
                 }
             ]
         )
 
         if interaction.output_image is not None:
             try:
-                out_bytes = base64.b64encode(
+                out_bytes = base64.b64decode(
                     interaction.output_image.data.encode('utf-8'))
                 image = Image.open(io.BytesIO(out_bytes))
                 image.save("output_copy.jpg")
