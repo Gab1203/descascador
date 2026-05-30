@@ -232,7 +232,7 @@ export default function Hero({ tokens, activePlan, onSpendToken }: HeroProps) {
             </div>
 
             <div className="rounded-[14px] border-2 border-ink bg-bg2 px-3.5 py-2.5 text-[14.5px] text-pretty">
-              <b className="font-display">“{activePlan.nick}”:</b> {activePlan.behavior}
+              <b className="font-display">“{activePlan.nick}”:</b>
             </div>
 
             <button onClick={() => setStage("ready")} className="btn w-full justify-center">
