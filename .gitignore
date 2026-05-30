@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 # Node
+/.next
 /node_modules
 npm-debug.log
 yarn-error.log
