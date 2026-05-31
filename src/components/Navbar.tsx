@@ -30,7 +30,7 @@ export default function Navbar({ tokens, activePlan }: NavbarProps) {
           >
             <Coins size={18} className="text-bananadeep" />
             <span className="font-display text-[17px] leading-none">{tk}</span>
-            <span className="hidden text-[13px] sm:inline">Tokens</span>
+            <span className="hidden text-[13px] sm:inline">Descascadas</span>
           </div>
 
           <button className="btn btn-ghost text-[15px]">

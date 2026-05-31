@@ -104,7 +104,7 @@ export default function Hero({ tokens, activePlan, onSpendToken }: HeroProps) {
             casca pra você. Sem facas, sem dedos cortados, sem desculpas.
           </p>
 
-          <div className="justify-center mt-7 flex flex-wrap gap-10">
+          <div className="justify-center mt-7 flex flex-wrap gap-5">
             <a href="#demo" className="btn btn-primary btn-lg">
               Descascar agora <ArrowRight size={18} />
             </a>

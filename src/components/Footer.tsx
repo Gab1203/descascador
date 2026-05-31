@@ -13,12 +13,12 @@ export default function Footer() {
   return (
     <footer className="mt-2.5 bg-ink px-0 pb-[26px] pt-12 text-[#F3E9D8]">
       <div className="mx-auto flex max-w-[1180px] flex-wrap justify-between gap-10 border-b-2 border-white/10 px-7 pb-[30px]">
-        <div>
+        <div className="mt-[20px]">
           <span className="flex items-center gap-2 font-display text-[21px] font-extrabold text-white">
             <span className="text-2xl">🥔</span> Descascador
           </span>
           <p className="mt-2.5 max-w-[280px] text-[14.5px] text-[#B6A892]">
-            Descascamos sua banana desde 2026. E sua batata também.
+            Descascamos sua banana desde 2026.
           </p>
         </div>
 
