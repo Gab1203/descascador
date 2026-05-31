@@ -23,7 +23,7 @@ Abra [http://localhost:3000](http://localhost:3000).
 
 ## Rodando o backend do projeto
 
-Crie e ative o ambiente virtual do Python
+Crie e ative o ambiente virtual do Python em outro terminal
 
 - Linux/MacOS
 
@@ -37,7 +37,7 @@ python -m venv .venv
 
 ```bash
 python -m venv .venv
-.\venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 ```
 
 Entre no diretório da API
@@ -52,7 +52,7 @@ Configure as variáveis de ambiente do projeto
 cp .env.example .env
 ```
 
-*Nota*: `GEMINI_API_KEY` é obrigatória e deve ser definida para uma chave de API do Gemini com suporte a geração de imagens com o NanoBanana 2
+*Nota*: `GEMINI_API_KEY` é obrigatória, e deve ser definida para uma chave de API do Gemini com suporte a geração de imagens com o NanoBanana 2 (adicione a sua chave)
 
 Depois instale as dependências e execute o projeto:
 
