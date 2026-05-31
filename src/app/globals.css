@@ -120,3 +120,4 @@
 .animate-pop { animation: pop 0.4s ease both; }
 .animate-fall { animation: fall 1.3s ease-in forwards; }
 .animate-loadbar { animation: loadbar 2.1s ease-in-out forwards; }
+.animate-mocked-42 { animation: loadbar 42s ease-in-out forwards; }
