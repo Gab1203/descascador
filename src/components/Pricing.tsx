@@ -14,7 +14,7 @@ export default function Pricing({ activePlanId, onChoose }: PricingProps) {
     <section id="planos" className="py-[54px] pb-[60px]">
       <div className="mx-auto max-w-[1180px] px-7">
         <header className="mb-9 flex flex-col items-center gap-3 text-center">
-          <span className="pill bg-banana shadow-flat">🪙 Planos & Tokens</span>
+          <span className="pill bg-banana shadow-flat">🪙 Planos</span>
           <h2 className="text-[42px] font-extrabold tracking-[-0.025em]">Escolha o seu nível de gume</h2>
           <p className="max-w-[520px] text-[17px] text-inksoft">
             Quanto mais você paga, menos casca sobra. É ciência de bancada.

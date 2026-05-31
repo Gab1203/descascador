@@ -15,7 +15,7 @@ const STEPS: Step[] = [
   {
     n: "02",
     icon: "🪙",
-    t: "Gaste 1 token",
+    t: "Gaste uma descascada",
     d: "Cada descascada custa 1 token de descascamento. Recarregue quando quiser.",
   },
   {

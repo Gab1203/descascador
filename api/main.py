@@ -1,9 +1,23 @@
 from fastapi import FastAPI, HTTPException, status
 from google import genai
-# from PIL import Image
+from google.genai import types as genai_types
+from PIL import Image
 import base64
 from config import settings
 from models import PeelRequest
+import io
+
+PROMPT_FULL_PEEL = (
+    "Analyze the fruit/vegetable/legume in the provided image. "
+    "Generate a new realistic image showing the exact same "
+    "fruit/vegetable/legume, but completely peeled. "
+    "Maintain the same angle, natural lighting, and a "
+    "clean, neutral background. "
+    "The exposed inner flesh must look fresh, juicy, "
+    "and highly detailed. "
+    "Do not add any extra objects to the scene."
+)
+
 
 client = genai.Client(api_key=settings.gemini_api_key)
 
@@ -22,13 +36,38 @@ async def peel(request_data: PeelRequest):
     base64_string = request_data.image_base64
 
     try:
-        image_bytes = base64.b64decode(base64_string)
         interaction = client.interactions.create(
-            model="gemini-2.5-flash-image",
-            input="generate the image of an apple",
+            model="gemini-3.1-flash-image",
+            input=[
+                {
+                    "type": "text",
+                    "text": PROMPT_FULL_PEEL,
+                },
+                {
+                    "type": "image",
+                    "data": base64_string,
+                    "mime_type": f"image/{request_data.image_type}",
+                }
+            ]
         )
 
-        print(interaction.output_image)
+        if interaction.output_image is not None:
+            try:
+                out_bytes = base64.b64decode(
+                    interaction.output_image.data.encode('utf-8'))
+                image = Image.open(io.BytesIO(out_bytes))
+                image.save("output_copy.jpg")
+            except Exception as e:
+                print(f"Failed to save copy image: {e}")
+        if interaction.output_text is not None:
+            print(interaction.output_text)
+
+        # Return a response
+        return {
+            "status": "processed",
+            "mode_used": current_mode,
+            "output_image_base64": interaction.output_image.data,
+        }
 
     except Exception as e:
         print(f"An exception occurred: {e}")
@@ -37,12 +76,6 @@ async def peel(request_data: PeelRequest):
             detail="Invalid base64 string provided."
         )
 
-    # Return a response
-    return {
-        "status": "processed",
-        "mode_used": current_mode,
-        "decoded_size_bytes": len(image_bytes)
-    }
 
 # Define a dynamic endpoint with a path parameter
 
