@@ -1,0 +1,75 @@
+# ==============================================================================
+# Etapa 1: Instalação de Dependências
+# ==============================================================================
+FROM node:20-alpine AS deps
+# Adiciona libc6-compat para compatibilidade com algumas bibliotecas nativas do Node
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+# Copia apenas os arquivos de definição de pacotes para aproveitar o cache do Docker
+COPY package.json package-lock.json* yarn.lock* pnpm-lock.yaml* ./
+
+# Instala as dependências de forma limpa e estrita com base no lockfile disponível
+RUN \
+  if [ -f package-lock.json ]; then npm ci; \
+  elif [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
+  else echo "Lockfile não encontrado." && exit 1; \
+  fi
+
+# ==============================================================================
+# Etapa 2: Construção da Aplicação (Build)
+# ==============================================================================
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# Copia as dependências instaladas na etapa anterior
+COPY --from=deps /app/node_modules ./node_modules
+# Copia todo o restante do código fonte
+COPY . .
+
+# Desativa a telemetria do Next.js durante o processo de build (melhora a privacidade e performance)
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Executa o build da aplicação (gera os arquivos estáticos e otimizados)
+RUN \
+  if [ -f package-lock.json ]; then npm run build; \
+  elif [ -f yarn.lock ]; then yarn build; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
+  else echo "Lockfile não encontrado para o build." && exit 1; \
+  fi
+
+# ==============================================================================
+# Etapa 3: Imagem Final de Execução (Runner)
+# ==============================================================================
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Prática Recomendada de Segurança: Criar utilizador não-root para execução do processo
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copia a pasta pública e define as permissões corretas para o cache do Next.js
+COPY --from=builder /app/public ./public
+RUN mkdir .next && chown nextjs:nodejs .next
+
+# TRUQUE DE MESTRE DEVOPS: Copia apenas os artefatos standalone gerados pelo Next.js
+# Isso exclui dependências de desenvolvimento e reduz drasticamente o tamanho da imagem
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Define o utilizador que executará o container
+USER nextjs
+
+# Porta padrão exposta pelo Next.js
+EXPOSE 3000
+ENV PORT=3000
+
+# Permite que o container aceite conexões externas
+ENV HOSTNAME="0.0.0.0"
+
+# O Next.js no modo standalone gera um ficheiro 'server.js' nativo em Node.js
+CMD ["node", "server.js"]

@@ -1,0 +1,117 @@
+# ==============================================================================
+# 1. FRONTEND - NEXT.JS, NODE & TYPESCRIPT
+# ==============================================================================
+
+# Dependências locais (Podem quebrar o build se compiladas para arquiteturas diferentes)
+node_modules/
+.pnpm-store/
+
+# Artefatos de Build do Next.js e exportações estáticas
+.next/
+out/
+build/
+dist/
+
+# Logs do gerenciador de pacotes
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Cache do TypeScript e ferramentas de build
+tsconfig.tsbuildinfo
+.turbo/
+.vercel/
+
+# Arquivos de ambiente locais do Next.js (Segurança Crítica)
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+
+# ==============================================================================
+# 2. BACKEND - PYTHON & FASTAPI
+# ==============================================================================
+
+# Caches e arquivos compilados do Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.installed.cfg
+*.egg
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+wheels/
+
+# Ambientes Virtuais Python
+venv/
+env/
+.venv/
+.env_python/
+Pipfile.lock
+poetry.lock
+
+
+# ==============================================================================
+# 3. SEGURANÇA GERAL, ARQUIVOS SENSÍVEIS E CONFIGURAÇÕES
+# ==============================================================================
+
+# Arquivos genéricos de variáveis de ambiente e chaves
+.env
+.env.*
+*.pem
+secrets.json
+credentials.json
+
+
+# ==============================================================================
+# 4. FERRAMENTAS, IDES E SISTEMA OPERACIONAL
+# ==============================================================================
+
+# Git
+.git
+.gitignore
+.github/
+
+# IDEs (VS Code, WebStorm/IntelliJ)
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# Testes, Cobertura e Linters (Python e JS)
+.pytest_cache/
+.tox/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.eslintcache
+
+# Arquivos do Sistema Operacional (Evita sujeira no container)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Arquivos de infraestrutura local
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.*.yml

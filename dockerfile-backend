@@ -1,0 +1,38 @@
+# 1. Base Image: Usando a versão slim para manter a imagem leve e segura
+FROM python:3.11-slim
+
+# 2. Variáveis de Ambiente: 
+# PYTHONDONTWRITEBYTECODE: Evita que o Python crie arquivos .pyc na imagem
+# PYTHONUNBUFFERED: Garante que os logs saiam no console imediatamente (essencial para debug em containers)
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# 3. Diretório de Trabalho
+WORKDIR /app
+
+# 4. Segurança: Criar um usuário não-root para rodar a aplicação
+RUN addgroup --system appgroup && adduser --system --group appuser
+
+# 5. Cache de Camadas: Copiar apenas o requirements primeiro
+# Se o requirements.txt não mudar, o Docker usa o cache dessa camada e o build fica instantâneo
+COPY requirements.txt .
+
+# 6. Instalação: Atualizar o pip e instalar dependências sem gerar cache temporário (diminui o tamanho da imagem)
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# 7. Copiar o Código Fonte: Copiamos a pasta 'api' inteira para dentro do container
+COPY ./api ./api
+
+# 8. Permissões: Passar a propriedade dos arquivos para o usuário não-root
+RUN chown -R appuser:appgroup /app
+
+# 9. Trocar de Usuário: A partir daqui, rodamos como 'appuser'
+USER appuser
+
+# 10. Expor a porta padrão do Uvicorn
+EXPOSE 8000
+
+# 11. Entrypoint: Iniciar a aplicação
+# Assumindo que seu arquivo principal dentro da pasta api seja 'main.py' e a instância do FastAPI se chame 'app'
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
