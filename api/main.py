@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from google import genai
-from google.genai import types as genai_types
 from PIL import Image
 import base64
 from config import settings
