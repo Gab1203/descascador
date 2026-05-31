@@ -173,7 +173,7 @@ export default function Hero({ tokens, activePlan, onSpendToken, onChoosePlan, o
       </div>
 
       {/* ---- Demo card ---- */}
-      <div id="demo" className="mx-[30px] mt-[50px] rounded-[30px] border-[3px] border-ink bg-surface p-5 shadow-chunky">
+      <div id="demo" className="m-auto mt-[50px] max-w-[1140px] rounded-[30px] border-[3px] border-ink bg-surface p-5 shadow-chunky">
 
         {/* Cabeçalho com select de plano */}
         <div className="mb-5 flex flex-col items-center justify-center gap-2.5">
@@ -216,21 +216,23 @@ export default function Hero({ tokens, activePlan, onSpendToken, onChoosePlan, o
               onDragLeave={() => setDragOver(false)}
               onDrop={onDrop}
               className={
-                "cursor-pointer rounded-[22px] border-[3px] border-dashed px-6 py-[46px] text-center transition " +
+                "cursor-pointer rounded-[22px] border-[3px] border-dashed px-6 py-[46px] text-center transition h-[400px] grid place-items-center " +
                 (dragOver
                   ? "scale-[1.01] border-carrot bg-[#FFEAD6]"
                   : "border-[#D9C9B0] bg-gradient-to-b from-[#FFFBF4] to-[#FFF6E9] hover:border-carrot hover:bg-[#FFF3E6]")
               }
             >
-              <div className="mx-auto mb-3.5 grid h-[62px] w-[62px] place-items-center rounded-full border-[2.5px] border-ink bg-banana shadow-flat">
-                <Upload size={30} />
+              <div>
+                <div className="mx-auto mb-3.5 grid h-[62px] w-[62px] place-items-center rounded-full border-[2.5px] border-ink bg-banana shadow-flat">
+                  <Upload size={30} />
+                </div>
+                <p className="font-display text-[22px] font-bold">
+                  Arraste sua {activeProduce.label.toLowerCase()} aqui
+                </p>
+                <p className="mt-1.5 text-[14.5px] font-medium text-muted">
+                  ou clique para escolher um arquivo · PNG, JPG até 10MB
+                </p>
               </div>
-              <p className="font-display text-[19px] font-bold">
-                Arraste seu {activeProduce.label.toLowerCase()} aqui
-              </p>
-              <p className="mt-1.5 text-[13.5px] font-medium text-muted">
-                ou clique para escolher um arquivo · PNG, JPG até 10MB
-              </p>
             </div>
           </>
         )}
