@@ -44,7 +44,7 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"message": "Hello, World! Your FastAPI app is up and running."}
+    return {"message": "Descascador API v1.0.0"}
 
 
 @app.post("/peel-base64")
@@ -92,8 +92,3 @@ async def peel(request_data: PeelRequest):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e),
         )
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str = None):
-    return {"item_id": item_id, "query_param": q}
