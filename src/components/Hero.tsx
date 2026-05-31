@@ -238,7 +238,7 @@ export default function Hero({ tokens, activePlan, onSpendToken, onChoosePlan, o
         {/* ---- READY: preview + peel button ---- */}
         {stage === "ready" && (
           <div className="flex flex-col items-center gap-4">
-            <div className="checker relative grid h-[230px] w-full place-items-center overflow-hidden rounded-[20px] border-[2.5px] border-ink">
+            <div className="checker relative h-[300px] w-fit overflow-hidden rounded-[20px] border-[2.5px] border-ink">
               {previewUrl ? (
                 <img
                   src={previewUrl}
@@ -305,7 +305,9 @@ export default function Hero({ tokens, activePlan, onSpendToken, onChoosePlan, o
 
               <Panel label="Descascado" ok>
                 {activePlan.vaporize ? (
-                  <span className="animate-pop text-[74px] opacity-90">💨</span>
+                  <div className="grid place-items-center h-full">
+                    <span className="animate-pop text-[74px] opacity-90">💨</span>
+                  </div>
                 ) : resultUrl ? (
                   <img src={resultUrl} alt="Descascado" className="h-full w-full object-contain animate-pop" />
                 ) : (
@@ -366,7 +368,7 @@ function Panel({ label, ok = false, children }: { label: string; ok?: boolean; c
         {ok && <Check size={13} />}
         {label}
       </div>
-      <div className="checker relative grid h-[158px] place-items-center overflow-hidden">{children}</div>
+      <div className="checker relative h-[300px] overflow-hidden">{children}</div>
     </div>
   );
 }
