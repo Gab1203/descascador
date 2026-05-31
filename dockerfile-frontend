@@ -17,15 +17,6 @@ RUN \
   else echo "Lockfile não encontrado." && exit 1; \
   fi
 
-# ==============================================================================
-# Etapa 2: Construção da Aplicação (Build)
-# ==============================================================================
-FROM node:20-alpine AS builder
-WORKDIR /app
-
-# Copia as dependências instaladas na etapa anterior
-COPY --from=deps /app/node_modules ./node_modules
-# Copia todo o restante do código fonte
 COPY . .
 
 # Desativa a telemetria do Next.js durante o processo de build (melhora a privacidade e performance)
@@ -39,11 +30,6 @@ RUN \
   else echo "Lockfile não encontrado para o build." && exit 1; \
   fi
 
-# ==============================================================================
-# Etapa 3: Imagem Final de Execução (Runner)
-# ==============================================================================
-FROM node:20-alpine AS runner
-WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -51,15 +37,6 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Prática Recomendada de Segurança: Criar utilizador não-root para execução do processo
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
-
-# Copia a pasta pública e define as permissões corretas para o cache do Next.js
-COPY --from=builder /app/public ./public
-RUN mkdir .next && chown nextjs:nodejs .next
-
-# TRUQUE DE MESTRE DEVOPS: Copia apenas os artefatos standalone gerados pelo Next.js
-# Isso exclui dependências de desenvolvimento e reduz drasticamente o tamanho da imagem
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 # Define o utilizador que executará o container
 USER nextjs
@@ -72,4 +49,4 @@ ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 # O Next.js no modo standalone gera um ficheiro 'server.js' nativo em Node.js
-CMD ["node", "server.js"]
+CMD ["npm", "run", "start"]

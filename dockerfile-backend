@@ -15,7 +15,7 @@ RUN addgroup --system appgroup && adduser --system --group appuser
 
 # 5. Cache de Camadas: Copiar apenas o requirements primeiro
 # Se o requirements.txt não mudar, o Docker usa o cache dessa camada e o build fica instantâneo
-COPY requirements.txt .
+COPY api/requirements.txt .
 
 # 6. Instalação: Atualizar o pip e instalar dependências sem gerar cache temporário (diminui o tamanho da imagem)
 RUN pip install --no-cache-dir --upgrade pip && \
@@ -27,6 +27,8 @@ COPY ./api ./api
 # 8. Permissões: Passar a propriedade dos arquivos para o usuário não-root
 RUN chown -R appuser:appgroup /app
 
+WORKDIR /app/api
+
 # 9. Trocar de Usuário: A partir daqui, rodamos como 'appuser'
 USER appuser
 
@@ -35,4 +37,4 @@ EXPOSE 8000
 
 # 11. Entrypoint: Iniciar a aplicação
 # Assumindo que seu arquivo principal dentro da pasta api seja 'main.py' e a instância do FastAPI se chame 'app'
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
