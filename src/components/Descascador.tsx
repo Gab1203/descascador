@@ -13,12 +13,15 @@ export default function Descascador() {
   const [activePlan, setActivePlan] = useState<Plan>(PLANS[0]); // Lâmina Cega (gratuito)
   const [tokens, setTokens] = useState<number>(PLANS[0].tokens);
 
-  // Gasta 1 token por descascada. Plano infinito nunca decrementa.
   function spendToken(): boolean {
     if (tokens === Infinity) return true;
     if (tokens <= 0) return false;
     setTokens((t) => t - 1);
     return true;
+  }
+
+  function refundToken(): void {
+    if (tokens !== Infinity) setTokens((t) => t + 1);
   }
 
   // Trocar de plano reseta os tokens e rola de volta pra demo ver o efeito.
@@ -38,7 +41,7 @@ export default function Descascador() {
     <>
       <Navbar tokens={tokens} activePlan={activePlan} />
       <main>
-        <Hero tokens={tokens} activePlan={activePlan} onSpendToken={spendToken} />
+        <Hero tokens={tokens} activePlan={activePlan} onSpendToken={spendToken} onChoosePlan={choosePlan} onRefundToken={refundToken} />
         <HowItWorks />
         <Pricing activePlanId={activePlan.id} onChoose={choosePlan} />
       </main>

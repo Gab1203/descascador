@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from google import genai
 from google.genai import types as genai_types
 from PIL import Image
@@ -7,22 +8,39 @@ from config import settings
 from models import PeelRequest
 import io
 
-PROMPT_FULL_PEEL = (
-    "Analyze the fruit/vegetable/legume in the provided image. "
-    "Generate a new realistic image showing the exact same "
-    "fruit/vegetable/legume, but completely peeled. "
-    "Maintain the same angle, natural lighting, and a "
-    "clean, neutral background. "
-    "The exposed inner flesh must look fresh, juicy, "
-    "and highly detailed. "
-    "Do not add any extra objects to the scene."
-)
-
+PROMPTS = {
+    "free": (
+        "Você é um assistente de processamento de imagem preguiçoso e com má vontade. "
+        "O usuário lhe enviou um legume. Edite a imagem removendo apenas 10% da casca. "
+        "Deixe o resto intacto e pareça que o trabalho foi feito de qualquer jeito, sem capricho."
+    ),
+    "mediano": (
+        "Você é um cozinheiro razoável num dia sem inspiração. "
+        "Edite a imagem deste vegetal removendo aproximadamente 60% da casca. "
+        "O resultado pode ter imperfeições — nem muito bem nem muito mal."
+    ),
+    "pro": (
+        "Você é um chef profissional impecável. Edite a imagem deste vegetal removendo "
+        "100% da casca de forma cirúrgica e perfeita, preservando toda a parte comestível. "
+        "O resultado deve ser impecável, limpo e de alta qualidade."
+    ),
+    "premium": (
+        "Você é um chef interdimensional e onipotente. Transcenda a imagem deste vegetal — "
+        "remova 100% da casca com precisão sobrenatural, como se ela nunca tivesse existido. "
+        "O resultado deve ser perfeito além da perfeição, com iluminação e textura divinas."
+    ),
+}
 
 client = genai.Client(api_key=settings.gemini_api_key)
 
-# Initialize the FastAPI application
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
@@ -32,8 +50,9 @@ def read_root():
 
 @app.post("/peel-base64")
 async def peel(request_data: PeelRequest):
-    current_mode = request_data.mode
+    current_plan = request_data.plan
     base64_string = request_data.image_base64
+    prompt = PROMPTS.get(current_plan, PROMPTS["pro"])
 
     try:
         interaction = client.interactions.create(
@@ -41,7 +60,7 @@ async def peel(request_data: PeelRequest):
             input=[
                 {
                     "type": "text",
-                    "text": PROMPT_FULL_PEEL,
+                    "text": prompt,
                 },
                 {
                     "type": "image",
@@ -62,10 +81,9 @@ async def peel(request_data: PeelRequest):
         if interaction.output_text is not None:
             print(interaction.output_text)
 
-        # Return a response
         return {
             "status": "processed",
-            "mode_used": current_mode,
+            "plan_used": current_plan,
             "output_image_base64": interaction.output_image.data,
         }
 
@@ -73,11 +91,8 @@ async def peel(request_data: PeelRequest):
         print(f"An exception occurred: {e}")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid base64 string provided."
+            detail=str(e),
         )
-
-
-# Define a dynamic endpoint with a path parameter
 
 
 @app.get("/items/{item_id}")
