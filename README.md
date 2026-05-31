@@ -2,9 +2,17 @@
 
 Landing page interativa do **Descascador** — você faz upload de uma fruta/legume, gasta **Tokens de Descascamento** e a IA devolve o alimento descascado. Dependendo do plano, o descascamento é perfeito... ou propositalmente péssimo.
 
-Construído com **Next.js (App Router)**, **TypeScript**, **Tailwind CSS v4** e **Lucide React**.
+Construído com **Next.js (App Router)**, **TypeScript**, **Tailwind CSS v4**, **Lucide React**, **Python** e **FastAPI**.
 
-## Rodando o projeto
+## Rodando o frontend projeto
+
+Crie e edite o arquivo de variáveis de ambiente:
+
+```bash
+cp .env.local.example .env.local
+```
+
+Depois instale as dependências e execute o projeto:
 
 ```bash
 npm install
@@ -13,9 +21,50 @@ npm run dev
 
 Abra [http://localhost:3000](http://localhost:3000).
 
+## Rodando o backend do projeto
+
+Crie e ative o ambiente virtual do Python
+
+- Linux/MacOS
+
+```bash
+python -m venv .venv
+. .venv/bin/activate
+
+```
+
+- Windows
+
+```bash
+python -m venv .venv
+.\venv\Scripts\Activate.ps1
+```
+
+Entre no diretório da API
+
+```bash
+cd api
+```
+
+Configure as variáveis de ambiente do projeto
+
+```bash
+cp .env.example .env
+```
+
+*Nota*: `GEMINI_API_KEY` é obrigatória e deve ser definida para uma chave de API do Gemini com suporte a geração de imagens com o NanoBanana 2
+
+Depois instale as dependências e execute o projeto:
+
+```bash
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
 ## Estrutura
 
 ```
+# Frontend
 src/
 ├── app/
 │   ├── globals.css      # Tailwind v4 + design tokens (@theme) + animações
@@ -30,6 +79,13 @@ src/
 │   └── Footer.tsx       # rodapé + aviso legal
 └── data/
     └── plans.ts         # PLANS / PRODUCE + tipos Plan e Produce
+
+# API Backend
+api/
+├── models/
+│   └── peel_request.py  # Schema da requisição para descascar o legume
+├── config.py            # Arquivo de definição das variáveis de ambiente
+└── main.py              # Raiz do projeto FastAPI
 ```
 
 ## Tipos
@@ -78,13 +134,3 @@ Tokens definidos em `globals.css` via `@theme` (Tailwind v4) — use como utilit
 | `bg`     | `#FFF7EC` | fundo                  |
 
 Estilo: cartões com contorno grosso + sombra sólida, cantos arredondados, dois pesos de fonte. Helpers `.btn`, `.btn-primary`, `.pill`, `.checker` e animações (`.animate-bob`, `.animate-chop`, etc.) ficam em `globals.css`.
-
-## Plugando a IA de verdade 
-
-A demo hoje é **mockada**: o `peel()` em `Hero.tsx` só espera 2,2s e mostra um resultado simulado. Para conectar o modelo real:
-
-1. Crie uma rota `src/app/api/peel/route.ts` que recebe a imagem (base64) + o `peelPct` do plano e chama o `gemini-2.5-flash-image` com um prompt do tipo _"remova X% da casca deste alimento"_.
-2. Em `Hero.tsx`, troque o `setTimeout(...)` dentro de `peel()` por um `await fetch("/api/peel", { ... })` e guarde a imagem retornada no estado para exibir no painel "Descascado".
-3. O `peelPct` / `vaporize` de cada plano (em `data/plans.ts`) já controla a "qualidade" — passe-os no prompt.
-
-> ⚠️ Nenhum dedo foi cortado na produção deste software.
