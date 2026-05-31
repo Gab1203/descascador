@@ -40,7 +40,7 @@ export const PLANS: Plan[] = [
     cta: "Começar de graça",
     feats: [
       "Descascamento HD ",
-      "Melhor que plástico, o guerreiro do dia a dia", 
+      "Melhor que plástico, o guerreiro do dia a dia",
       "Fundo do vegetal por sua conta"
     ],
   },
@@ -92,7 +92,7 @@ export const PLANS: Plan[] = [
     tokens: Infinity,
     tokensLabel: "Descascadas infinitas",
     peelPct: 100,
-    vaporize: true,
+    vaporize: false,
     accent: "var(--color-lime)",
     accentDeep: "var(--color-limedeep)",
     cta: "Empunhar o sabre",
